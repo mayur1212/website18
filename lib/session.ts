@@ -1,4 +1,4 @@
-import { getIronSession, IronSessionData } from "iron-session";
+import { getIronSession, type IronSession } from "iron-session";
 import { cookies } from "next/headers";
 
 export interface RegionData {
@@ -7,14 +7,26 @@ export interface RegionData {
   cinema?: string;
 }
 
+/**
+ * Base user interface with required and common optional fields
+ * Extend this interface if you need additional user properties
+ */
 export interface User {
   id: string;
   email: string;
   name?: string;
-  [key: string]: any; // Allow additional user properties
+  phone?: string;
+  avatar?: string;
+  role?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface SessionData extends IronSessionData {
+/**
+ * Session data structure stored in Iron Session
+ * This interface defines all possible session properties
+ */
+export interface SessionData {
   language?: string;
   region?: RegionData;
   user?: User;
@@ -31,7 +43,7 @@ export const sessionOptions = {
   },
 };
 
-export async function getSession() {
+export async function getSession(): Promise<IronSession<SessionData>> {
   const cookieStore = await cookies();
   return getIronSession<SessionData>(cookieStore, sessionOptions);
 }

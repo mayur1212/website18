@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { User } from "@/lib/session";
+import { isValidUser } from "@/lib/validators";
 
 interface AuthContextType {
   user: User | null;
@@ -27,7 +28,12 @@ export function AuthProvider({
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         try {
-          return JSON.parse(storedUser);
+          const parsed = JSON.parse(storedUser) as unknown;
+          // Validate the parsed user data using type guard
+          if (isValidUser(parsed)) {
+            return parsed;
+          }
+          return null;
         } catch {
           return null;
         }

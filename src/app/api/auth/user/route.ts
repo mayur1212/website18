@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, User } from "@/lib/session";
+import { getSession } from "@/lib/session";
+import { validatePartialUser } from "@/lib/validators";
 
 export async function GET() {
   try {
@@ -14,11 +15,12 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
-    const { user } = await request.json();
+    const body = await request.json();
+    const { user: userUpdateData } = body;
     
-    if (!user || !user.id || !user.email) {
+    if (!userUpdateData) {
       return NextResponse.json(
-        { error: "Invalid user data. id and email are required." },
+        { error: "User data is required" },
         { status: 400 }
       );
     }
@@ -32,15 +34,18 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    session.user = { ...session.user, ...user } as User;
+    // Validate and merge user data
+    const partialUser = validatePartialUser(userUpdateData);
+    session.user = { ...session.user, ...partialUser };
     await session.save();
 
     return NextResponse.json({ success: true, user: session.user });
   } catch (error) {
     console.error("Error updating user:", error);
+    const errorMessage = error instanceof Error ? error.message : "Failed to update user";
     return NextResponse.json(
-      { error: "Failed to update user" },
-      { status: 500 }
+      { error: errorMessage },
+      { status: error instanceof Error && errorMessage.includes("Invalid") ? 400 : 500 }
     );
   }
 }
