@@ -11,7 +11,7 @@ export default function ActivitiesPage() {
       {/* Header */}
       <Header />
 
-      {/* Full width hero (no padding, no container) */}
+     
       <ActivitiesHero />
       <AllActivities />
 
