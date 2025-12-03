@@ -47,7 +47,7 @@ export default function TopHindiMovies() {
         {/* GRID – mobile + tablet: 2 per row, desktop: 4 per row */}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {MOVIES.map((movie) => (
-            <article
+            <div
               key={movie.id}
               className="overflow-hidden rounded-[24px] bg-white shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
             >
@@ -72,7 +72,7 @@ export default function TopHindiMovies() {
                 </p>
               </div>
               </Link>
-            </article>
+            </div>
           ))}
         </div>
       </div>

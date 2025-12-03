@@ -39,7 +39,7 @@ export default function FeaturedCarousel() {
   const prev = () => setCurrent((p) => (p - 1 + total) % total);
 
   const metaText = `${item.certificate} | ${item.genre}`;
-  const bgImage = item.poster; // 👈 इथे दोन्हीसाठी same image
+  const bgImage = item.poster;
 
   // AUTO SLIDE (5 sec)
   useEffect(() => {
@@ -52,10 +52,10 @@ export default function FeaturedCarousel() {
 
   return (
     <>
-      {/* ==================== MOBILE + TABLET VERSION ==================== */}
+      {/* ==================== MOBILE + TABLET ==================== */}
       <section className="relative w-full py-8 px-4 md:py-10 lg:hidden overflow-hidden">
-        {/* Background = poster image */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
+        {/* Background */}
+        <div className="pointer-events-none absolute inset-0">
           <Image
             src={bgImage}
             alt={item.title}
@@ -63,10 +63,11 @@ export default function FeaturedCarousel() {
             priority
             className="h-full w-full object-cover scale-110 blur-xl"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-white/40 to-white" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-white/40 to-white" />
         </div>
 
-        <div className="mx-auto w-full max-w-3xl">
+        {/* Content */}
+        <div className="relative z-10 mx-auto w-full max-w-3xl">
           <h2 className="text-lg font-semibold text-white drop-shadow sm:text-xl">
             In the spotlight
           </h2>
@@ -86,13 +87,13 @@ export default function FeaturedCarousel() {
               <h3 className="text-base font-semibold text-zinc-900 sm:text-lg">
                 {item.title}
               </h3>
-
               <p className="mt-1 text-xs font-medium text-zinc-500 sm:text-sm">
                 {item.certificate}
               </p>
             </div>
           </article>
 
+          {/* Dots */}
           <div className="mt-4 flex justify-center gap-2">
             {MOVIES.map((movie, index) => {
               const active = index === current;
@@ -114,8 +115,8 @@ export default function FeaturedCarousel() {
 
       {/* ==================== DESKTOP VERSION ==================== */}
       <section className="relative hidden min-h-[520px] items-center overflow-hidden px-8 py-10 md:px-16 lg:flex">
-        {/* Background = poster blur */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
+        {/* Background */}
+        <div className="pointer-events-none absolute inset-0">
           <Image
             src={bgImage}
             alt={item.title}
@@ -126,26 +127,28 @@ export default function FeaturedCarousel() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white" />
         </div>
 
-        {/* Arrows */}
+        {/* LEFT ARROW – sectionच्या थोडं आत */}
         <button
           onClick={prev}
           aria-label="Previous"
-          className="absolute left-16 top-[52%] hidden -translate-y-1/2 text-4xl font-bold text-black md:flex"
+          className="absolute left-24 top-1/2 z-20 -translate-y-1/2 flex items-center justify-center text-2xl font-semibold text-zinc-900 hover:scale-110 transition-transform"
         >
           ‹
         </button>
 
+        {/* RIGHT ARROW – दुसऱ्या बाजूला */}
         <button
           onClick={next}
           aria-label="Next"
-          className="absolute right-16 top-[52%] hidden -translate-y-1/2 text-4xl font-bold text-black md:flex"
+          className="absolute right-24 top-1/2 z-20 -translate-y-1/2 flex items-center justify-center text-2xl font-semibold text-zinc-900 hover:scale-110 transition-transform"
         >
           ›
         </button>
 
-        {/* Content */}
-        <div className="flex w-full max-w-6xl items-center justify-between gap-6">
-          <div className="ml-16 flex flex-1 flex-col gap-6 md:max-w-lg">
+        {/* CONTENT (CENTERED) */}
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between gap-10 px-4">
+          {/* LEFT TEXT */}
+          <div className="flex flex-1 flex-col gap-6 md:max-w-lg">
             <h1 className="text-[34px] font-semibold tracking-tight text-zinc-900 md:text-[44px]">
               {item.title}
             </h1>
@@ -159,7 +162,8 @@ export default function FeaturedCarousel() {
             </button>
           </div>
 
-          <div className="mr-16 flex flex-1 items-center justify-end">
+          {/* RIGHT POSTER IMAGE */}
+          <div className="flex flex-1 items-center justify-end">
             <div className="relative h-[360px] w-[240px] overflow-hidden rounded-[32px] bg-black shadow-[0_28px_60px_rgba(0,0,0,0.35)] md:h-[420px] md:w-[270px] lg:h-[460px] lg:w-[300px]">
               <Image
                 src={item.poster}
@@ -172,7 +176,8 @@ export default function FeaturedCarousel() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 gap-3">
+        {/* DOTS */}
+        <div className="relative z-10 absolute bottom-8 left-1/2 flex -translate-x-1/2 gap-3">
           {MOVIES.map((movie, index) => {
             const active = index === current;
 
