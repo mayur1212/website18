@@ -51,7 +51,7 @@ export default function InfoAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggle = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+    setOpenIndex((prev) => (prev === index ? null : index));
   };
 
   return (
@@ -66,6 +66,8 @@ export default function InfoAccordion() {
             <button
               onClick={() => toggle(index)}
               className="w-full flex justify-between items-start px-6 py-4 cursor-pointer"
+              aria-expanded={openIndex === index}
+              aria-controls={`accordion-content-${index}`}
             >
               <p className="text-lg font-semibold text-gray-900 text-left leading-snug">
                 {item.title}
@@ -73,23 +75,17 @@ export default function InfoAccordion() {
 
               {/* chevron gets a small top margin so it visually centers beside multi-line title */}
               <ChevronDown
-                className={`w-5 h-5 text-gray-600 transition-transform duration-300 mt-1 ${
-                  openIndex === index ? "rotate-180" : ""
-                }`}
+                className={`w-5 h-5 text-gray-600 transition-transform duration-300 mt-1 ${openIndex === index ? "rotate-180" : ""}`}
+                aria-hidden
               />
             </button>
 
             {/* Content */}
             <div
-              className={`px-6 transition-all duration-300 ease-in-out ${
-                openIndex === index
-                  ? "max-h-[500px] opacity-100 pb-4"
-                  : "max-h-0 opacity-0"
-              } overflow-hidden`}
+              id={`accordion-content-${index}`}
+              className={`px-6 transition-all duration-300 ease-in-out ${openIndex === index ? "max-h-[500px] opacity-100 pb-4" : "max-h-0 opacity-0"} overflow-hidden`}
             >
-              <p className="text-gray-700 leading-relaxed text-left">
-                {item.content}
-              </p>
+              <p className="text-gray-700 leading-relaxed text-left">{item.content}</p>
             </div>
           </div>
         ))}

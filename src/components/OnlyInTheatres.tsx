@@ -1,12 +1,27 @@
-// (full file, only heights changed for poster container)
+// src/components/OnlyInTheatres.tsx
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { SlidersHorizontal, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-// ✅ MOVIE DATA – UPDATED IMAGES (d1.jpg, d2.jpg ...)
-const MOVIES = [
+/**
+ * Sample data and filter UI for "Only in Theatres".
+ * Adjust images, genres, languages and formats as needed.
+ */
+
+type MovieItem = {
+  id: number;
+  title: string;
+  cert: string;
+  language: string;
+  image: string;
+  tags: string[];
+  genres: string[];
+};
+
+const MOVIES: MovieItem[] = [
   { id: 1, title: "De De Pyaar De 2", cert: "UA13+", language: "Hindi", image: "/movies/d1.jpg", tags: ["New Releases"], genres: ["Comedy", "Drama"] },
   { id: 2, title: "Tere Ishk Mein", cert: "UA16+", language: "Hindi", image: "/movies/d2.jpg", tags: ["New Releases"], genres: ["Romance", "Drama"] },
   { id: 3, title: "Mastiii 4", cert: "A", language: "Hindi", image: "/movies/d3.jpg", tags: ["New Releases", "3D"], genres: ["Comedy"] },
@@ -36,7 +51,7 @@ export default function OnlyInTheatres() {
   const router = useRouter();
 
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [activeTab, setActiveTab] = useState("Genre");
+  const [activeTab, setActiveTab] = useState<"Genre" | "Language" | "Format">("Genre");
 
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
@@ -49,7 +64,9 @@ export default function OnlyInTheatres() {
     );
   };
 
+  // Filtering logic: quick filters + modal filters
   const filteredMovies = MOVIES.filter((movie) => {
+    // quick filters can be language filters or tag/format filters
     const quickLang = quickFilters.some((f) => LANGUAGES.includes(f));
     const quickTag = quickFilters.some((f) => FORMATS.includes(f) || f.includes("Re") || f.includes("New"));
 
@@ -66,7 +83,6 @@ export default function OnlyInTheatres() {
   return (
     <section className="w-full px-4 pt-10 md:px-6 lg:px-16 lg:pt-16">
       <div className="mx-auto max-w-6xl">
-
         <h2 className="mb-6 text-[26px] font-semibold md:text-[32px] lg:text-[36px]">
           Only in Theatres
         </h2>
@@ -98,45 +114,40 @@ export default function OnlyInTheatres() {
         </div>
 
         {/* MOVIE GRID */}
-<div className="mx-auto w-full">
-  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 gap-3">
-    {filteredMovies.map((movie) => (
-      <div
-        key={movie.id}
-        onClick={() => {
-          const slug = movie.title.toLowerCase().replace(/ /g, "-");
-          router.push(`/movie/${slug}`);
-        }}
-        className="cursor-pointer w-full min-w-0 overflow-hidden rounded-[22px] bg-white shadow-[0_12px_30px_rgba(0,0,0,0.12)] transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.18)]"
-      >
-        {/* ← UPDATED RESPONSIVE HEIGHTS:
-            - base (mobile): larger
-            - sm (small tablet): slightly larger
-            - md (tablet / larger): even larger
-            - lg (desktop): keep original desktop size
-        */}
-        <div className="h-[260px] sm:h-[280px] md:h-[300px] lg:h-[260px]">
-          <img src={movie.image} alt={movie.title} className="h-full w-full object-cover" />
-        </div>
+        <div className="mx-auto w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 gap-3">
+            {filteredMovies.map((movie) => (
+              <div
+                key={movie.id}
+                onClick={() => {
+                  const slug = movie.title.toLowerCase().replace(/ /g, "-");
+                  router.push(`/movie/${slug}`);
+                }}
+                className="cursor-pointer w-full min-w-0 overflow-hidden rounded-[22px] bg-white shadow-[0_12px_30px_rgba(0,0,0,0.12)] transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.18)]"
+              >
+                {/* responsive poster heights */}
+                <div className="h-[260px] sm:h-[280px] md:h-[300px] lg:h-[260px]">
+                  {/* using native img for simple example; replace with next/image if desired */}
+                  <img src={movie.image} alt={movie.title} className="h-full w-full object-cover" />
+                </div>
 
-        <div className="px-3 py-3 md:px-4 md:py-4">
-          <h3 className="line-clamp-2 text-[14px] font-semibold md:text-[16px]">
-            {movie.title}
-          </h3>
-          <p className="mt-1 text-[12px] text-zinc-500 md:text-[13px]">
-            {movie.cert} | {movie.language}
-          </p>
+                <div className="px-3 py-3 md:px-4 md:py-4">
+                  <h3 className="line-clamp-2 text-[14px] font-semibold md:text-[16px]">
+                    {movie.title}
+                  </h3>
+                  <p className="mt-1 text-[12px] text-zinc-500 md:text-[13px]">
+                    {movie.cert} | {movie.language}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    ))}
-  </div>
-</div>
 
         {/* FILTER MODAL */}
         {showFilterModal && (
           <div className="fixed inset-0 bg-white/30 backdrop-blur-md flex items-center justify-center z-50 p-4">
             <div className="w-full max-w-4xl bg-white rounded-3xl p-6 md:p-8 shadow-lg">
-
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold">Filter by</h2>
                 <button onClick={() => setShowFilterModal(false)} className="text-xl font-bold text-zinc-600">✕</button>
@@ -144,7 +155,7 @@ export default function OnlyInTheatres() {
 
               <div className="flex gap-6">
                 <div className="w-40 border-r pr-4">
-                  {["Genre", "Language", "Format"].map((tab) => (
+                  {(["Genre", "Language", "Format"] as const).map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
@@ -245,7 +256,6 @@ export default function OnlyInTheatres() {
                   Apply Filters
                 </button>
               </div>
-
             </div>
           </div>
         )}

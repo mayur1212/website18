@@ -1,7 +1,9 @@
+// src/components/RegionStories.jsx
 "use client";
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const STORIES = [
   {
@@ -36,7 +38,7 @@ export default function RegionStories() {
           Stories Across Regions
         </h2>
 
-        {/* MOBILE + TABLET */}
+        {/* MOBILE + TABLET (2 cards per row) */}
         <div
           className="
             mt-8
@@ -46,68 +48,40 @@ export default function RegionStories() {
           "
         >
           {STORIES.map((item) => (
-            <Link key={item.id} href={`/movie/${item.slug}`}>
-              <div
-                className="
-                  rounded-[20px] bg-white shadow-[0_10px_25px_rgba(0,0,0,0.1)]
-                  overflow-hidden cursor-pointer
-                "
-              >
-                <div className="h-[230px] sm:h-[260px] md:h-[300px] w-full">
-                  <image
-                    src={item.image}
-                    alt={item.title}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
+            <Link
+              key={item.id}
+              href={`/movie/${item.slug}`}
+              className="rounded-[20px] bg-white shadow-[0_10px_25px_rgba(0,0,0,0.08)] overflow-hidden"
+            >
+              <div className="h-[230px] sm:h-[260px] md:h-[300px] w-full relative">
+                <Image src={item.image} alt={item.title} fill className="object-cover" />
+              </div>
 
-                <div className="px-3 py-3">
-                  <h3 className="text-[14px] sm:text-[15px] font-semibold leading-snug">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1 text-[12px] text-zinc-600">
-                    {item.subtitle}
-                  </p>
-                </div>
+              <div className="px-3 py-3">
+                <h3 className="text-[14px] sm:text-[15px] font-semibold leading-snug">
+                  {item.title}
+                </h3>
+                <p className="mt-1 text-[12px] text-zinc-600">{item.subtitle}</p>
               </div>
             </Link>
           ))}
         </div>
 
-        {/* DESKTOP - COMPACT EXACT LOOK */}
+        {/* DESKTOP: compact cards */}
         <div className="mt-8 hidden lg:flex gap-6">
           {STORIES.map((item) => (
-            <Link key={item.id} href={`/movie/${item.slug}`}>
-              <div
-                className="
-                  w-[200px]
-                  rounded-[20px]
-                  bg-white
-                  border border-zinc-100
-                  shadow-[0_12px_28px_rgba(0,0,0,0.12)]
-                  overflow-hidden
-                  cursor-pointer
-                  transition
-                  hover:-translate-y-[3px]
-                  hover:shadow-[0_20px_40px_rgba(0,0,0,0.20)]
-                "
-              >
-                <div className="h-[280px] w-full">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
+            <Link
+              key={item.id}
+              href={`/movie/${item.slug}`}
+              className="w-[200px] rounded-[20px] bg-white border border-zinc-100 shadow-[0_12px_28px_rgba(0,0,0,0.08)] overflow-hidden transition hover:-translate-y-[3px] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
+            >
+              <div className="h-[280px] w-full relative">
+                <Image src={item.image} alt={item.title} fill className="object-cover" />
+              </div>
 
-                <div className="px-4 py-3">
-                  <h3 className="text-[14px] font-semibold leading-snug">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1 text-[12px] text-zinc-600">
-                    {item.subtitle}
-                  </p>
-                </div>
+              <div className="px-4 py-3">
+                <h3 className="text-[14px] font-semibold leading-snug">{item.title}</h3>
+                <p className="mt-1 text-[12px] text-zinc-600">{item.subtitle}</p>
               </div>
             </Link>
           ))}

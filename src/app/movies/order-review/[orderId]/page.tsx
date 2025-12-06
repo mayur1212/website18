@@ -1,14 +1,15 @@
 // src/app/movies/order-review/[orderId]/page.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { use, useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Header from "@/components/Header"; // your header
 import Footer from "@/components/Footer"; // your footer (replace/remove if different)
 import Image from "next/image";
 
 type Props = {
-  params: { orderId: string };
+  // In a client component Next may pass params as a Promise — so type it as Promise
+  params: Promise<{ orderId?: string }>;
   searchParams?: { [key: string]: string | string[] | undefined };
 };
 
@@ -21,7 +22,9 @@ type FoodItem = {
 };
 
 export default function OrderReviewPage({ params, searchParams }: Props) {
-  const orderId = params?.orderId ?? "unknown";
+  // unwrap params promise using React.use()
+  const resolvedParams = use(params);
+  const orderId = resolvedParams?.orderId ?? "unknown";
 
   // read search params (safe extraction)
   const encsessionid = typeof searchParams?.encsessionid === "string" ? searchParams.encsessionid : "";
@@ -73,9 +76,32 @@ export default function OrderReviewPage({ params, searchParams }: Props) {
   const districtPaymentUrl = useMemo(() => {
     const enc = encodeURIComponent(encsessionid || "");
     const base = "https://www.district.in/movies/order-review";
-    // Example link structure based on user earlier: /movies/order-review/2j8pr99vjk?encsessionid=...
     return `${base}/${encodeURIComponent(orderId)}?encsessionid=${enc}&seats=${encodeURIComponent(seats.join(","))}&amount=${encodeURIComponent(totalToBePaid)}&fromdate=${encodeURIComponent(fromdate)}`;
   }, [encsessionid, orderId, seats, totalToBePaid, fromdate]);
+
+  // ---------- TIMER: 3 minutes ----------
+  const [secondsLeft, setSecondsLeft] = useState<number>(180);
+  const minutes = Math.floor(secondsLeft / 60);
+  const seconds = secondsLeft % 60;
+  const formattedTime = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+  useEffect(() => {
+    if (secondsLeft <= 0) return;
+
+    const id = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) {
+          clearInterval(id);
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [secondsLeft]);
+
+  const isExpired = secondsLeft <= 0;
 
   return (
     <>
@@ -84,8 +110,12 @@ export default function OrderReviewPage({ params, searchParams }: Props) {
       <main className="min-h-screen bg-zinc-50 py-8">
         <div className="mx-auto max-w-[1200px] px-4">
           {/* top thin countdown / notice */}
-          <div className="mb-4 rounded text-sm bg-violet-50 border border-violet-100 px-4 py-2 text-violet-700 text-center">
-            Complete your booking in <strong>1:20 mins</strong>
+          <div className={`mb-4 rounded text-sm px-4 py-2 text-center ${isExpired ? "bg-red-50 border border-red-200 text-red-700" : "bg-violet-50 border border-violet-100 text-violet-700"}`}>
+            {isExpired ? (
+              <>Time expired — your booking session ended.</>
+            ) : (
+              <>Complete your booking in <strong>{formattedTime}</strong></>
+            )}
           </div>
 
           <div className="grid grid-cols-12 gap-6">
@@ -161,7 +191,6 @@ export default function OrderReviewPage({ params, searchParams }: Props) {
                         <div className="h-28 w-full overflow-hidden rounded-md bg-zinc-50">
                           {/* fallback: if images missing, use blank */}
                           {food.img ? (
-                            // next/image requires loader/public - ensure asset exists or replace with img tag if not
                             <Image src={food.img} alt={food.title} width={300} height={180} className="object-cover w-full h-full" />
                           ) : (
                             <div className="flex h-full items-center justify-center text-zinc-400">No image</div>
@@ -264,9 +293,9 @@ export default function OrderReviewPage({ params, searchParams }: Props) {
 
                     <a
                       href={districtPaymentUrl}
-                      className="rounded-full bg-black px-4 py-3 text-sm font-semibold text-white shadow hover:opacity-95"
+                      className={`rounded-full px-4 py-3 text-sm font-semibold text-white shadow hover:opacity-95 ${isExpired ? "bg-zinc-400 pointer-events-none" : "bg-black"}`}
                     >
-                      Proceed To Pay
+                      {isExpired ? "Session expired" : "Proceed To Pay"}
                     </a>
                   </div>
 

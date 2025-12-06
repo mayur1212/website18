@@ -16,9 +16,9 @@ export default function HomePage() {
         <FeaturedCarousel />
       </div>
 
-      {/* Rest of the page inside centered container */}
+      {/* Center Content Container */}
       <div className="max-w-[1350px] mx-auto px-1 md:px-6">
-        {/* Stories Across Regions Section */}
+        {/* Stories Across Regions */}
         <div className="mt-12">
           <RegionStories />
         </div>

@@ -1,18 +1,15 @@
+// src/components/EventCard.tsx
 "use client";
 
+import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { SlidersHorizontal, ChevronDown } from "lucide-react";
 
-const FILTER_CHIPS = [
-  "Today",
-  "Tomorrow",
-  "This Weekend",
-  "Under 10 km",
-  "Comedy",
-  "Music",
-];
-
-const EVENTS = [
+/**
+ * Named export so other pages (e.g. /events/[id]/page.tsx) can import EVENTS.
+ */
+export const EVENTS = [
   {
     id: 1,
     image: "/movies/event2.jpg",
@@ -175,27 +172,31 @@ const EVENTS = [
   },
 ];
 
+const FILTER_CHIPS = [
+  "Today",
+  "Tomorrow",
+  "This Weekend",
+  "Under 10 km",
+  "Comedy",
+  "Music",
+];
 
 export default function EventCard() {
   return (
     <section className="w-full py-10">
-      {/* Outer width matches screenshot */}
       <div className="w-[80%] mx-auto">
-        {/* Title */}
         <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-black">
           All events
         </h2>
 
         {/* Filters row */}
-        
-          <div
-  className="
-    mb-8 flex items-center gap-3
-    overflow-x-auto whitespace-nowrap no-scrollbar
-    lg:flex-wrap lg:overflow-visible lg:whitespace-normal
-  "
->
-
+        <div
+          className="
+            mb-8 flex items-center gap-3
+            overflow-x-auto whitespace-nowrap no-scrollbar
+            lg:flex-wrap lg:overflow-visible lg:whitespace-normal
+          "
+        >
           {/* Filters pill */}
           <button className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-800 shadow-sm">
             <SlidersHorizontal className="w-4 h-4" />
@@ -203,7 +204,7 @@ export default function EventCard() {
             <ChevronDown className="w-4 h-4" />
           </button>
 
-          {/* Other filter chips */}
+          {/* Quick chips */}
           {FILTER_CHIPS.map((chip) => (
             <button
               key={chip}
@@ -214,52 +215,27 @@ export default function EventCard() {
           ))}
         </div>
 
-        {/* Cards list */}
-        
+        {/* Cards grid / list */}
+        <div className="flex flex-col gap-7 md:grid md:grid-cols-4 md:gap-8">
+          {EVENTS.map((event) => (
+            <Link
+              key={event.id}
+              href={`/events/${event.id}`}
+              className="flex flex-col bg-white rounded-[18px] shadow-[0_6px_24px_rgba(0,0,0,0.12)] overflow-hidden hover:scale-[1.01] transition-transform"
+            >
+              <div className="relative w-full h-[240px] md:h-[260px]">
+                <Image src={event.image} alt={event.title} fill className="object-cover" />
+              </div>
 
-          <div
-  className="
-    flex flex-col gap-7
-    overflow-visible
-    md:grid md:grid-cols-4 md:gap-8
-  "
->
-  {EVENTS.map((event) => (
-    <div
-      key={event.id}
-      className="
-        flex flex-col
-        bg-white rounded-[26px]
-        shadow-[0_6px_24px_rgba(0,0,0,0.12)]
-        overflow-hidden
-        w-full
-      "
-    >
-      <div className="relative w-full h-[360px] overflow-hidden">
-        <Image
-          src={event.image}
-          alt={event.title}
-          fill
-          className="object-cover"
-        />
-      </div>
-
-      <div className="px-4 py-4 space-y-1 bg-white">
-        <p className="text-[11px] text-zinc-500">{event.dateTime}</p>
-        <h3 className="text-[15px] font-semibold text-zinc-900 leading-snug">
-          {event.title}
-        </h3>
-        <p className="text-[12px] text-zinc-500 truncate">
-          {event.location}
-        </p>
-        <p className="text-[13px] font-semibold text-zinc-900 mt-1">
-          {event.price}
-        </p>
-      </div>
-    </div>
-  ))}
-</div>
-
+              <div className="px-4 py-4 bg-white">
+                <p className="text-[11px] text-zinc-500">{event.dateTime}</p>
+                <h3 className="text-[15px] font-semibold text-zinc-900 mt-1">{event.title}</h3>
+                <p className="text-[12px] text-zinc-500 truncate mt-1">{event.location}</p>
+                <p className="text-[13px] font-semibold text-zinc-900 mt-2">{event.price}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );

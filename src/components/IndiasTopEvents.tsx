@@ -65,6 +65,7 @@ export default function IndiasTopEvents() {
         <h2 className="mb-6 text-2xl font-semibold leading-tight text-zinc-900">
           India&apos;s Top Events
         </h2>
+    
 
        {/* Left arrow */}
 <button

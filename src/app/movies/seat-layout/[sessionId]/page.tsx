@@ -89,6 +89,7 @@ type Seat = { id: string; number: string; status: SeatStatus };
 type Row = { label: string; seats: Seat[] };
 type Section = { id: string; name: string; price: number; rows: Row[] };
 
+// ----- HELPER: create one row -----
 function makeRow(label: string, count: number, occupied: number[] = []): Row {
   const seats: Seat[] = Array.from({ length: count }, (_, i) => {
     const num = i + 1;
@@ -112,6 +113,10 @@ const INITIAL_SECTIONS: Section[] = [
       makeRow("L", 12, [6, 7, 8]),
       makeRow("K", 12, [1, 2]),
       makeRow("J", 12),
+      makeRow("H", 12, [10, 11]),
+      makeRow("G", 12),
+      makeRow("F", 12),
+      makeRow("E", 12),
     ],
   },
   {
@@ -122,7 +127,7 @@ const INITIAL_SECTIONS: Section[] = [
   },
 ];
 
-/* Showtime popover (unchanged) */
+/* Showtime popover (reused) */
 function ShowtimePopover({
   tiers,
 }: {
@@ -229,7 +234,7 @@ export default function TheatrePage() {
 
   const totalAmount = selectedSeats.reduce((sum, s) => sum + (s.sectionPrice ?? 0), 0);
 
-  // timers for showtime popover (kept from previous)
+  // timers for showtime popover
   const SHOW_DELAY = 200;
   const HIDE_DELAY = 150;
   function handleMouseEnterShow(id: string) {
@@ -265,11 +270,7 @@ export default function TheatrePage() {
   function handlePay() {
     if (selectedSeats.length === 0) return;
 
-    // Ideally get real orderId by POSTing to your backend here.
-    // Temporary generated order id:
     const orderId = `ord-${Math.random().toString(36).slice(2, 10)}`;
-
-    // Example query params — keep encsessionid if needed by order-review page
     const enc = "1020682-26488-ob4ywm-2j8pr99vjk";
     const type = "cinemas";
     const year = 2025;
@@ -288,7 +289,6 @@ export default function TheatrePage() {
       `&seats=${encodeURIComponent(seatsParam)}` +
       `&amount=${encodeURIComponent(String(amountParam))}`;
 
-    // navigate internally
     router.push(pathname + search);
   }
 
