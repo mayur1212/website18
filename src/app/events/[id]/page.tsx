@@ -1,20 +1,25 @@
+// src/app/events/[id]/page.tsx
 "use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Header from "@/components/Header"; // ⭐ your existing navbar
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 import { EVENTS } from "@/components/EventCard";
 import EventGuideModal from "@/components/EventGuideModal";
 
-export default function EventDetails({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = React.use(params);
+type Props = {
+  params: {
+    id: string;
+  };
+};
+
+export default function EventDetails({ params }: Props) {
+  const { id } = params;
   const event = EVENTS.find((e) => e.id === Number(id));
 
   const [guideOpen, setGuideOpen] = useState(false);
-
-  // ⭐ SEE MORE / SEE LESS EVENT TEXT
   const [showMore, setShowMore] = useState(false);
 
   const FULL_TEXT = `
@@ -36,18 +41,17 @@ culture, entertainment, learning, and creativity under one roof!
     window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
   };
 
-  if (!event)
+  if (!event) {
     return <p className="p-10 text-center text-xl text-black">Event not found</p>;
+  }
 
   return (
     <div className="min-h-screen bg-white text-black">
-
-      {/* ⭐ NAVBAR */}
       <Header />
 
-      {/* HERO SECTION */}
-      <div className="w-[86%] mx-auto pt-10 flex gap-10">
-        <div className="w-[70%] rounded-2xl overflow-hidden shadow-lg">
+      {/* HERO */}
+      <div className="w-[86%] mx-auto pt-10 flex flex-col gap-8 lg:flex-row">
+        <div className="w-full lg:w-[70%] rounded-2xl overflow-hidden shadow-lg">
           <Image
             src={event.image}
             alt={event.title}
@@ -57,13 +61,13 @@ culture, entertainment, learning, and creativity under one roof!
           />
         </div>
 
-        <div className="w-[30%] bg-white rounded-2xl shadow-md p-6 h-fit">
+        <div className="w-full lg:w-[30%] bg-white rounded-2xl shadow-md p-6 h-fit">
           <h1 className="text-2xl font-bold">{event.title}</h1>
 
           <div className="mt-4 space-y-3 text-[14px] text-zinc-700">
             <p>📅 {event.dateTime}</p>
             <p>📍 {event.location}</p>
-            <p>🎭 Category: {event.category}</p>
+            <p>🎭 Category: {event.category ?? "General"}</p>
           </div>
 
           <p className="mt-6 text-lg font-semibold">
@@ -76,7 +80,7 @@ culture, entertainment, learning, and creativity under one roof!
         </div>
       </div>
 
-      {/* ⭐ ABOUT SECTION WITH SEE MORE / SEE LESS */}
+      {/* ABOUT */}
       <div className="w-[86%] mx-auto mt-14">
         <h2 className="text-xl font-semibold mb-2">About the Event</h2>
 
@@ -87,12 +91,13 @@ culture, entertainment, learning, and creativity under one roof!
         <button
           onClick={() => setShowMore(!showMore)}
           className="ml-2 text-blue-600 font-medium text-sm hover:underline"
+          aria-expanded={showMore}
         >
           {showMore ? "See less" : "See more"}
         </button>
       </div>
 
-      {/* EVENT GUIDE (short) */}
+      {/* EVENT GUIDE */}
       <div className="w-[86%] mx-auto mt-10 flex items-center justify-between">
         <h2 className="text-xl font-semibold">Event Guide</h2>
         <button
@@ -103,21 +108,18 @@ culture, entertainment, learning, and creativity under one roof!
         </button>
       </div>
 
-      {/* SMALL EVENT GUIDE PREVIEW */}
-      <div className="w-[86%] mx-auto grid grid-cols-3 gap-6 mt-4 text-[14px]">
+      <div className="w-[86%] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 text-[14px]">
         <div className="p-4 bg-zinc-100 rounded-xl text-black">Language: English</div>
         <div className="p-4 bg-zinc-100 rounded-xl text-black">Duration: 6 Hours</div>
-        <div className="p-4 bg-zinc-100 rounded-xl text-black">
-          Tickets Needed: 16 yrs+
-        </div>
+        <div className="p-4 bg-zinc-100 rounded-xl text-black">Tickets Needed: 16 yrs+</div>
       </div>
 
-      {/* ARTIST SECTION */}
+      {/* ARTIST */}
       <div className="w-[86%] mx-auto mt-14">
         <h2 className="text-xl font-semibold">Artist</h2>
 
-        <div className="flex items-center gap-6 mt-6">
-          <div className="h-40 w-40 rounded-full overflow-hidden">
+        <div className="flex flex-col gap-6 mt-6 md:flex-row md:items-center">
+          <div className="h-40 w-40 rounded-full overflow-hidden flex-shrink-0">
             <Image
               src="/movies/a1.jpg"
               alt="Artist"
@@ -131,8 +133,7 @@ culture, entertainment, learning, and creativity under one roof!
             <h3 className="text-lg font-semibold">John Doe</h3>
             <p className="text-zinc-600 text-sm">Singer, Performer</p>
             <p className="text-zinc-600 text-sm max-w-md mt-1">
-              A renowned performer known for creating immersive musical
-              experiences and energetic live shows.
+              A renowned performer known for creating immersive musical experiences and energetic live shows.
             </p>
           </div>
         </div>
@@ -175,10 +176,10 @@ culture, entertainment, learning, and creativity under one roof!
         </details>
       </div>
 
-      {/* EVENT GUIDE POPUP */}
+      {/* Event Guide Modal */}
       {guideOpen && <EventGuideModal onClose={() => setGuideOpen(false)} />}
-        
-         <Footer />
+
+      <Footer />
     </div>
   );
 }
