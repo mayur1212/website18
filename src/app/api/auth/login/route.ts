@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { user: userData } = body;
-    
+
     if (!userData) {
       return NextResponse.json(
         { error: "User data is required" },
@@ -14,21 +14,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate and create properly typed User object
+    // Validate user object
     const user = validateUser(userData);
 
+    // Get session
     const session = await getSession();
-    session.user = user;
-    await session.save();
 
-    return NextResponse.json({ success: true, user: session.user });
+    // 🔥 FIX: Handle possible null
+    if (!session) {
+      return NextResponse.json(
+        { error: "Session could not be created" },
+        { status: 500 }
+      );
+    }
+
+    // 🔥 FIX: Use cast variable (TS-safe)
+    const s = session as any;
+    s.user = user;
+    await s.save();
+
+    return NextResponse.json({ success: true, user: s.user });
   } catch (error) {
     console.error("Error logging in:", error);
-    const errorMessage = error instanceof Error ? error.message : "Failed to login";
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to login";
+
     return NextResponse.json(
       { error: errorMessage },
-      { status: error instanceof Error && errorMessage.includes("Invalid") ? 400 : 500 }
+      {
+        status:
+          error instanceof Error && errorMessage.includes("Invalid")
+            ? 400
+            : 500,
+      }
     );
   }
 }
+
 
