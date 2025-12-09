@@ -22,14 +22,14 @@ const EVENT_CATEGORIES = [
 export default function ExploreEvents() {
   return (
     <section className="w-full py-10 flex justify-center">
-      <div className="w-[80%] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-8">
+      <div className="w-[90%] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-8">
 
         {EVENT_CATEGORIES.map((item, index) => (
           <div
             key={index}
             className="rounded-3xl p-5 bg-gradient-to-b from-[#fff9db] to-[#ffeaa7] shadow-md border border-yellow-200 flex flex-col items-center justify-center hover:shadow-xl transition cursor-pointer"
           >
-            <div className="h-24 w-24 relative mb-3">
+            <div className="h-29 w-29 relative mb-3">
               <Image
                 src={item.image}
                 alt={item.title}
