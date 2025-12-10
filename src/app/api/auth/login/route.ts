@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User is required" }, { status: 400 });
     }
 
-    const session = await getSession();
+    const session: any = await getSession();
     if (!session) {
       return NextResponse.json(
         { error: "Session could not be created" },
@@ -18,9 +18,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // SIMPLE ASSIGN (no validation)
+    // Store user (simple object assign)
     session.user = user;
-    await session.save();
 
     return NextResponse.json({ success: true, user: session.user });
   } catch (error) {
@@ -28,6 +27,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to login" }, { status: 500 });
   }
 }
+
 
 
 
