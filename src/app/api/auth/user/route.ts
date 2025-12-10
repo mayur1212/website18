@@ -3,7 +3,7 @@ import { getSession } from "@/lib/session";
 
 export async function GET() {
   try {
-    const session = await getSession();
+    const session: any = await getSession();
     return NextResponse.json({ user: session?.user ?? null });
   } catch (error) {
     console.error("Session read error:", error);
@@ -20,14 +20,12 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "User is required" }, { status: 400 });
     }
 
-    const session = await getSession();
-
+    const session: any = await getSession();
     if (!session) {
       return NextResponse.json({ error: "No session" }, { status: 401 });
     }
 
     session.user = user;
-    await session.save();
 
     return NextResponse.json({ success: true, user: session.user });
   } catch (error) {
@@ -35,6 +33,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
   }
 }
+
 
 
 
