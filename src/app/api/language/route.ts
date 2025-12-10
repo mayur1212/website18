@@ -6,10 +6,10 @@ type Language = "en" | "ar";
 
 export async function GET() {
   try {
-    const session = await getSession();
+    const session: any = await getSession();
 
-    // default "en" if not set
-    const language = (session.language as Language) || "en";
+    // default "en" if not set or no session
+    const language: Language = (session?.language as Language) || "en";
 
     return NextResponse.json({ language }, { status: 200 });
   } catch (error) {
@@ -25,16 +25,23 @@ export async function POST(request: NextRequest) {
     const language = body.language as Language | undefined;
 
     // validate: only "en" or "ar" allowed
-    if (!language || (language !== "en" && language !== "ar")) {
+    if (language !== "en" && language !== "ar") {
       return NextResponse.json(
         { error: "Invalid language. Allowed values: 'en' or 'ar'." },
         { status: 400 }
       );
     }
 
-    const session = await getSession();
+    const session: any = await getSession();
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "No session" },
+        { status: 401 }
+      );
+    }
+
     session.language = language;
-    await session.save();
 
     return NextResponse.json({ success: true, language }, { status: 200 });
   } catch (error) {
