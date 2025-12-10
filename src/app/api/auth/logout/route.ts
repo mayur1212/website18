@@ -4,6 +4,16 @@ import { getSession } from "@/lib/session";
 export async function POST() {
   try {
     const session = await getSession();
+
+    // ✅ Handle case where no session exists
+    if (!session) {
+      return NextResponse.json(
+        { success: false, message: "No active session" },
+        { status: 200 }
+      );
+    }
+
+    // ✅ Clear user from session
     session.user = undefined;
     await session.save();
 
@@ -16,4 +26,3 @@ export async function POST() {
     );
   }
 }
-
