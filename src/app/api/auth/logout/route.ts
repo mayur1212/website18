@@ -5,7 +5,6 @@ export async function POST() {
   try {
     const session = await getSession();
 
-    // ✅ Handle case where no session exists
     if (!session) {
       return NextResponse.json(
         { success: false, message: "No active session" },
@@ -13,8 +12,8 @@ export async function POST() {
       );
     }
 
-    // ✅ Clear user from session
-    session.user = undefined;
+    // Safe: your session type MUST allow `user: User | null`
+    session.user = null;
     await session.save();
 
     return NextResponse.json({ success: true });
@@ -26,3 +25,4 @@ export async function POST() {
     );
   }
 }
+
