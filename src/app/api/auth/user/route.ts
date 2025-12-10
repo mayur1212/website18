@@ -5,10 +5,9 @@ import { validatePartialUser } from "@/lib/validators";
 export async function GET() {
   try {
     const session = await getSession();
-    const user = session.user || null;
-    return NextResponse.json({ user });
+    return NextResponse.json({ user: session?.user ?? null });
   } catch (error) {
-    console.error("Error getting user from session:", error);
+    console.error("Error getting user:", error);
     return NextResponse.json({ user: null }, { status: 200 });
   }
 }
@@ -16,37 +15,31 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { user: userUpdateData } = body;
-    
-    if (!userUpdateData) {
-      return NextResponse.json(
-        { error: "User data is required" },
-        { status: 400 }
-      );
+    const { user: update } = body;
+
+    if (!update) {
+      return NextResponse.json({ error: "User data is required" }, { status: 400 });
     }
 
     const session = await getSession();
-    
-    if (!session.user) {
-      return NextResponse.json(
-        { error: "Not authenticated" },
-        { status: 401 }
-      );
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    // Validate and merge user data
-    const partialUser = validatePartialUser(userUpdateData);
-    session.user = { ...session.user, ...partialUser };
+    const validated = validatePartialUser(update);
+
+    session.user = { ...session.user, ...validated };
     await session.save();
 
     return NextResponse.json({ success: true, user: session.user });
   } catch (error) {
     console.error("Error updating user:", error);
-    const errorMessage = error instanceof Error ? error.message : "Failed to update user";
+    const message = error instanceof Error ? error.message : "Failed to update user";
     return NextResponse.json(
-      { error: errorMessage },
-      { status: error instanceof Error && errorMessage.includes("Invalid") ? 400 : 500 }
+      { error: message },
+      { status: message.includes("Invalid") ? 400 : 500 }
     );
   }
 }
+
 
