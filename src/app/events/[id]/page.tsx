@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import { EVENTS } from "@/components/EventCard";
 import EventGuideModal from "@/components/EventGuideModal";
 
-// 🔹 Extend the event type to optionally include `category`
+// Event type extended to include category
 type DetailedEvent = (typeof EVENTS)[number] & {
   category?: string;
 };
@@ -19,9 +19,8 @@ interface EventDetailsProps {
 
 export default function EventDetails({ params }: EventDetailsProps) {
   const { id } = params;
-  const event = EVENTS.find((e) => e.id === Number(id)) as
-    | DetailedEvent
-    | undefined;
+
+  const event = EVENTS.find((e) => e.id === Number(id)) as DetailedEvent | undefined;
 
   const [guideOpen, setGuideOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -48,10 +47,11 @@ culture, entertainment, learning, and creativity under one roof!
     );
   };
 
-  if (!event)
+  if (!event) {
     return (
       <p className="p-10 text-center text-xl text-black">Event not found</p>
     );
+  }
 
   const categoryLabel = event.category ?? "Event";
 
@@ -60,7 +60,7 @@ culture, entertainment, learning, and creativity under one roof!
       <Header />
 
       {/* ===================================================== */}
-      {/* ⭐ MOBILE HERO (District Style) */}
+      {/* 📱 MOBILE HERO */}
       {/* ===================================================== */}
       <div className="md:hidden w-full mt-4">
         <Image
@@ -91,7 +91,7 @@ culture, entertainment, learning, and creativity under one roof!
       </div>
 
       {/* ===================================================== */}
-      {/* ⭐ DESKTOP HERO (unchanged) */}
+      {/* 🖥 DESKTOP HERO */}
       {/* ===================================================== */}
       <div className="w-[86%] mx-auto pt-10 gap-10 hidden md:flex">
         <div className="w-[70%] rounded-2xl overflow-hidden shadow-lg">
@@ -124,7 +124,7 @@ culture, entertainment, learning, and creativity under one roof!
       </div>
 
       {/* ===================================================== */}
-      {/* ⭐ ABOUT SECTION */}
+      {/* 📘 ABOUT SECTION */}
       {/* ===================================================== */}
       <div className="w-[90%] md:w-[86%] mx-auto mt-10">
         <h2 className="text-xl font-semibold mb-2">About the Event</h2>
@@ -141,7 +141,9 @@ culture, entertainment, learning, and creativity under one roof!
         </button>
       </div>
 
-      {/* EVENT GUIDE HEADER */}
+      {/* ===================================================== */}
+      {/* 📘 EVENT GUIDE */}
+      {/* ===================================================== */}
       <div className="w-[90%] md:w-[86%] mx-auto mt-10 flex items-center justify-between">
         <h2 className="text-xl font-semibold">Event Guide</h2>
         <button
@@ -152,20 +154,15 @@ culture, entertainment, learning, and creativity under one roof!
         </button>
       </div>
 
-      {/* EVENT GUIDE CARDS */}
       <div className="w-[90%] md:w-[86%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4 text-[14px]">
-        <div className="p-4 bg-zinc-100 rounded-xl text-black">
-          Language: English
-        </div>
-        <div className="p-4 bg-zinc-100 rounded-xl text-black">
-          Duration: 6 Hours
-        </div>
-        <div className="p-4 bg-zinc-100 rounded-xl text-black">
-          Tickets Needed: 16 yrs+
-        </div>
+        <div className="p-4 bg-zinc-100 rounded-xl text-black">Language: English</div>
+        <div className="p-4 bg-zinc-100 rounded-xl text-black">Duration: 6 Hours</div>
+        <div className="p-4 bg-zinc-100 rounded-xl text-black">Tickets Needed: 16 yrs+</div>
       </div>
 
-      {/* ARTIST SECTION */}
+      {/* ===================================================== */}
+      {/* 🎤 ARTIST SECTION */}
+      {/* ===================================================== */}
       <div className="w-[90%] md:w-[86%] mx-auto mt-14">
         <h2 className="text-xl font-semibold">Artist</h2>
 
@@ -184,14 +181,15 @@ culture, entertainment, learning, and creativity under one roof!
             <h3 className="text-lg font-semibold">John Doe</h3>
             <p className="text-zinc-600 text-sm">Singer, Performer</p>
             <p className="text-zinc-600 text-sm max-w-md mt-1 leading-relaxed">
-              A renowned performer known for creating immersive musical
-              experiences and energetic live shows.
+              A renowned performer known for immersive musical experiences and energetic live shows.
             </p>
           </div>
         </div>
       </div>
 
-      {/* VENUE SECTION */}
+      {/* ===================================================== */}
+      {/* 📍 VENUE SECTION */}
+      {/* ===================================================== */}
       <div className="w-[90%] md:w-[86%] mx-auto mt-14">
         <h2 className="text-xl font-semibold mb-2">Venue</h2>
 
@@ -207,14 +205,16 @@ culture, entertainment, learning, and creativity under one roof!
         </div>
       </div>
 
-      {/* FAQ & TERMS */}
+      {/* ===================================================== */}
+      {/* ❓ FAQ & TERMS */}
+      {/* ===================================================== */}
       <div className="w-[90%] md:w-[86%] mx-auto mt-14 space-y-4 pb-20">
         <details className="p-4 bg-zinc-100 rounded-xl cursor-pointer">
           <summary className="font-semibold">Frequently Asked Questions</summary>
           <p className="mt-3 text-zinc-700 leading-relaxed">
             • Parking is available onsite. <br />
             • Outside food is not allowed. <br />
-            • Gates open 2 hours before the event.
+            • Gates open 2 hours before showtime.
           </p>
         </details>
 
@@ -229,8 +229,10 @@ culture, entertainment, learning, and creativity under one roof!
       </div>
 
       {guideOpen && <EventGuideModal onClose={() => setGuideOpen(false)} />}
+
       <Footer />
     </div>
   );
 }
+
 
