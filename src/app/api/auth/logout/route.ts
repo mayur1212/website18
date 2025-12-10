@@ -6,23 +6,16 @@ export async function POST() {
     const session = await getSession();
 
     if (!session) {
-      return NextResponse.json(
-        { success: false, message: "No active session" },
-        { status: 200 }
-      );
+      return NextResponse.json({ success: false, message: "No session" });
     }
 
-    // Safe: your session type MUST allow `user: User | null`
+    // Clear user (use null so TS does not complain)
     session.user = null;
     await session.save();
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error logging out:", error);
-    return NextResponse.json(
-      { error: "Failed to logout" },
-      { status: 500 }
-    );
+    console.error("Logout error:", error);
+    return NextResponse.json({ error: "Failed to logout" }, { status: 500 });
   }
 }
-
