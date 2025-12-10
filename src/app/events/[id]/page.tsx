@@ -8,9 +8,20 @@ import Footer from "@/components/Footer";
 import { EVENTS } from "@/components/EventCard";
 import EventGuideModal from "@/components/EventGuideModal";
 
-export default function EventDetails({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = React.use(params);
-  const event = EVENTS.find((e) => e.id === Number(id));
+// 🔹 Extend the event type to optionally include `category`
+type DetailedEvent = (typeof EVENTS)[number] & {
+  category?: string;
+};
+
+interface EventDetailsProps {
+  params: { id: string };
+}
+
+export default function EventDetails({ params }: EventDetailsProps) {
+  const { id } = params;
+  const event = EVENTS.find((e) => e.id === Number(id)) as
+    | DetailedEvent
+    | undefined;
 
   const [guideOpen, setGuideOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -31,11 +42,18 @@ culture, entertainment, learning, and creativity under one roof!
 
   const openGoogleMaps = () => {
     const query = encodeURIComponent(event?.location || "");
-    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${query}`,
+      "_blank"
+    );
   };
 
   if (!event)
-    return <p className="p-10 text-center text-xl text-black">Event not found</p>;
+    return (
+      <p className="p-10 text-center text-xl text-black">Event not found</p>
+    );
+
+  const categoryLabel = event.category ?? "Event";
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -59,7 +77,7 @@ culture, entertainment, learning, and creativity under one roof!
           <div className="mt-3 text-[14px] space-y-1 text-zinc-700">
             <p>📅 {event.dateTime}</p>
             <p>📍 {event.location}</p>
-            <p>🎭 Category: {event.category}</p>
+            <p>🎭 Category: {categoryLabel}</p>
           </div>
 
           <p className="mt-4 text-lg font-semibold">
@@ -92,7 +110,7 @@ culture, entertainment, learning, and creativity under one roof!
           <div className="mt-4 space-y-3 text-[14px] text-zinc-700">
             <p>📅 {event.dateTime}</p>
             <p>📍 {event.location}</p>
-            <p>🎭 Category: {event.category}</p>
+            <p>🎭 Category: {categoryLabel}</p>
           </div>
 
           <p className="mt-6 text-lg font-semibold">
@@ -136,8 +154,12 @@ culture, entertainment, learning, and creativity under one roof!
 
       {/* EVENT GUIDE CARDS */}
       <div className="w-[90%] md:w-[86%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4 text-[14px]">
-        <div className="p-4 bg-zinc-100 rounded-xl text-black">Language: English</div>
-        <div className="p-4 bg-zinc-100 rounded-xl text-black">Duration: 6 Hours</div>
+        <div className="p-4 bg-zinc-100 rounded-xl text-black">
+          Language: English
+        </div>
+        <div className="p-4 bg-zinc-100 rounded-xl text-black">
+          Duration: 6 Hours
+        </div>
         <div className="p-4 bg-zinc-100 rounded-xl text-black">
           Tickets Needed: 16 yrs+
         </div>
@@ -211,3 +233,4 @@ culture, entertainment, learning, and creativity under one roof!
     </div>
   );
 }
+
