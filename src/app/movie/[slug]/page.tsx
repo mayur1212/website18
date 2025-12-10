@@ -312,15 +312,11 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
     "FORMAT" | "SHOW_TIME" | "PRICE" | "OTHERS"
   >("FORMAT");
 
-  const [selectedFormats, setSelectedFormats] = useState<ShowTimeFormat[]>(
-    []
-  );
+  const [selectedFormats, setSelectedFormats] = useState<ShowTimeFormat[]>([]);
   const [selectedShowTimes, setSelectedShowTimes] = useState<ShowTimeBucket[]>(
     []
   );
-  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>(
-    []
-  );
+  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [selectedOthers, setSelectedOthers] = useState<string[]>([]);
 
   const handleClearFilters = () => {
@@ -420,7 +416,10 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
     { id: "POSTERS", label: "Posters" },
   ];
 
-  const sectionRefMap: Record<DetailsTab, React.RefObject<HTMLDivElement>> = {
+  const sectionRefMap: Record<
+    DetailsTab,
+    React.RefObject<HTMLDivElement | null>
+  > = {
     REVIEWS: reviewsRef,
     SYNOPSIS: synopsisRef,
     CAST: castRef,
@@ -631,7 +630,9 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
 
             <button
               onClick={() =>
-                setSelectedOthers((prev) => toggleFromArray(prev, "RECLINERS"))
+                setSelectedOthers((prev) =>
+                  toggleFromArray(prev, "RECLINERS")
+                )
               }
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 reclinersActive
@@ -644,7 +645,9 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
 
             <button
               onClick={() =>
-                setSelectedOthers((prev) => toggleFromArray(prev, "WHEELCHAIR"))
+                setSelectedOthers((prev) =>
+                  toggleFromArray(prev, "WHEELCHAIR")
+                )
               }
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 wheelchairActive
@@ -657,7 +660,9 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
 
             <button
               onClick={() =>
-                setSelectedOthers((prev) => toggleFromArray(prev, "PREMIUM"))
+                setSelectedOthers((prev) =>
+                  toggleFromArray(prev, "PREMIUM")
+                )
               }
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 premiumActive
@@ -900,7 +905,9 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                   type="button"
                   onClick={() => handleDetailsTabClick(tab.id)}
                   className={`relative px-1 pb-3 text-sm font-medium md:px-2 md:text-base ${
-                    activeDetailsTab === tab.id ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-800"
+                    activeDetailsTab === tab.id
+                      ? "text-zinc-900"
+                      : "text-zinc-500 hover:text-zinc-800"
                   }`}
                 >
                   {tab.label}
@@ -931,14 +938,17 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                         <p className="text-xs font-semibold text-zinc-800">
                           Bollywood Hungama
                         </p>
-                        <p className="text-[11px] text-zinc-500">critic review</p>
+                        <p className="text-[11px] text-zinc-500">
+                          critic review
+                        </p>
                       </div>
                       <span className="ml-auto rounded-full bg-emerald-100 px-2 py-1 text-[11px] font-semibold text-emerald-700">
                         3.0/5 ★
                       </span>
                     </div>
                     <p className="mt-3 text-xs leading-relaxed text-zinc-600">
-                      An emotional love story with strong performances and a soundtrack that stays with you long after the film ends.
+                      An emotional love story with strong performances and a
+                      soundtrack that stays with you long after the film ends.
                     </p>
                   </div>
 
@@ -946,15 +956,20 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                     <div className="flex items-center gap-2">
                       <div className="h-8 w-8 rounded-full bg-blue-100" />
                       <div>
-                        <p className="text-xs font-semibold text-zinc-800">Taran Adarsh</p>
-                        <p className="text-[11px] text-zinc-500">film critic</p>
+                        <p className="text-xs font-semibold text-zinc-800">
+                          Taran Adarsh
+                        </p>
+                        <p className="text-[11px] text-zinc-500">
+                          film critic
+                        </p>
                       </div>
                       <span className="ml-auto rounded-full bg-emerald-100 px-2 py-1 text-[11px] font-semibold text-emerald-700">
                         3.5/5 ★
                       </span>
                     </div>
                     <p className="mt-3 text-xs leading-relaxed text-zinc-600">
-                      Relies heavily on its lead pair&apos;s chemistry and delivers a visually rich, emotionally charged experience.
+                      Relies heavily on its lead pair&apos;s chemistry and
+                      delivers a visually rich, emotionally charged experience.
                     </p>
                   </div>
                 </div>
@@ -962,26 +977,57 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
 
               {/* SYNOPSIS */}
               <section ref={synopsisRef} className="pb-10">
-                <h3 className="text-sm font-semibold text-zinc-900 md:text-base">Synopsis</h3>
+                <h3 className="text-sm font-semibold text-zinc-900 md:text-base">
+                  Synopsis
+                </h3>
                 <p className="mt-3 text-sm leading-relaxed text-zinc-700">
-                  Set in an urban landscape where modern love meets old–school devotion, <b>Tere Ishk Mein</b> follows two young adults drawn together by an unexpected encounter. As their relationship deepens, they must face external obstacles, internal doubts and the clash between passion and expectation.
+                  Set in an urban landscape where modern love meets old–school
+                  devotion, <b>Tere Ishk Mein</b> follows two young adults
+                  drawn together by an unexpected encounter. As their
+                  relationship deepens, they must face external obstacles,
+                  internal doubts and the clash between passion and expectation.
                 </p>
 
                 <div className="mt-6 space-y-3 text-sm text-zinc-700">
-                  <div className="flex items-center gap-3"><span className="text-lg">🎬</span><span>UA16+</span></div>
-                  <div className="flex items-center gap-3"><span className="text-lg">🌐</span><span>Hindi, Tamil, Telugu</span></div>
-                  <div className="flex items-center gap-3"><span className="text-lg">🎭</span><span>Drama, Romance</span></div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">🎬</span>
+                    <span>UA16+</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">🌐</span>
+                    <span>Hindi, Tamil, Telugu</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">🎭</span>
+                    <span>Drama, Romance</span>
+                  </div>
                 </div>
               </section>
 
               {/* CAST */}
               <section ref={castRef} className="pb-10">
-                <h3 className="text-sm font-semibold text-zinc-900 md:text-base">Cast &amp; Crew</h3>
+                <h3 className="text-sm font-semibold text-zinc-900 md:text-base">
+                  Cast &amp; Crew
+                </h3>
                 <div className="mt-5 grid grid-cols-3 gap-y-6 gap-x-4 md:grid-cols-5">
-                  {["Dhanush","Kriti Sanon","Priyanshu","Prakash Raj","Paramvir","Jaya B.","Vineet K.","Zeeshan A."].map((name, idx) => (
-                    <div key={idx} className="flex flex-col items-center gap-2">
+                  {[
+                    "Dhanush",
+                    "Kriti Sanon",
+                    "Priyanshu",
+                    "Prakash Raj",
+                    "Paramvir",
+                    "Jaya B.",
+                    "Vineet K.",
+                    "Zeeshan A.",
+                  ].map((name, idx) => (
+                    <div
+                      key={idx}
+                      className="flex flex-col items-center gap-2"
+                    >
                       <div className="h-16 w-16 rounded-full bg-zinc-200" />
-                      <span className="text-[11px] font-medium text-zinc-800 text-center">{name}</span>
+                      <span className="text-[11px] font-medium text-zinc-800 text-center">
+                        {name}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -989,13 +1035,25 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
 
               {/* VIDEOS */}
               <section ref={videosRef} className="pb-10">
-                <h3 className="text-sm font-semibold text-zinc-900 md:text-base">Videos</h3>
+                <h3 className="text-sm font-semibold text-zinc-900 md:text-base">
+                  Videos
+                </h3>
                 <div className="mt-5 grid gap-5 md:grid-cols-2">
-                  {[1,2].map((i)=>(
-                    <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-zinc-900">
-                      <Image src="/movies/d4.jpg" alt="Trailer" fill className="object-cover" />
+                  {[1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-zinc-900"
+                    >
+                      <Image
+                        src="/movies/d4.jpg"
+                        alt="Trailer"
+                        fill
+                        className="object-cover"
+                      />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-xl shadow-lg">▶</button>
+                        <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-xl shadow-lg">
+                          ▶
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -1004,10 +1062,18 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
 
               {/* POSTERS */}
               <section ref={postersRef} className="pb-4">
-                <h3 className="text-sm font-semibold text-zinc-900 md:text-base">Posters &amp; wallpapers</h3>
+                <h3 className="text-sm font-semibold text-zinc-900 md:text-base">
+                  Posters &amp; wallpapers
+                </h3>
                 <div className="mt-5 flex justify-center">
                   <div className="relative max-w-md overflow-hidden rounded-3xl bg-zinc-900">
-                    <Image src="/movies/d4.jpg" alt="Poster" width={600} height={800} className="h-auto w-full object-cover"/>
+                    <Image
+                      src="/movies/d4.jpg"
+                      alt="Poster"
+                      width={600}
+                      height={800}
+                      className="h-auto w-full object-cover"
+                    />
                   </div>
                 </div>
               </section>
@@ -1040,19 +1106,32 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
               </div>
 
               <div className="flex flex-1 flex-col gap-2">
-                <h2 className="text-lg font-semibold text-zinc-900 md:text-xl">{infoTheatre.name}</h2>
-                <p className="text-xs leading-relaxed text-zinc-600 md:text-sm">{infoTheatre.address}</p>
+                <h2 className="text-lg font-semibold text-zinc-900 md:text-xl">
+                  {infoTheatre.name}
+                </h2>
+                <p className="text-xs leading-relaxed text-zinc-600 md:text-sm">
+                  {infoTheatre.address}
+                </p>
               </div>
             </div>
 
             <div className="mt-6">
-              <h3 className="text-sm font-semibold text-zinc-900">Services &amp; amenities</h3>
+              <h3 className="text-sm font-semibold text-zinc-900">
+                Services &amp; amenities
+              </h3>
 
               <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-4 text-xs text-zinc-700 sm:grid-cols-3 md:grid-cols-4">
                 {infoTheatre.amenities?.map((a) => (
-                  <div key={a.id} className="flex flex-col items-center gap-1 text-center">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-base">{a.icon}</div>
-                    <span className="max-w-[8rem] text-[11px] leading-snug text-zinc-600">{a.label}</span>
+                  <div
+                    key={a.id}
+                    className="flex flex-col items-center gap-1 text-center"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-base">
+                      {a.icon}
+                    </div>
+                    <span className="max-w-[8rem] text-[11px] leading-snug text-zinc-600">
+                      {a.label}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -1088,7 +1167,9 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
               ✕
             </button>
 
-            <h2 className="text-lg font-semibold text-zinc-900 md:text-xl">Filter by</h2>
+            <h2 className="text-lg font-semibold text-zinc-900 md:text-xl">
+              Filter by
+            </h2>
 
             {/* Main body with fixed inner height */}
             <div className="mt-6 flex flex-1 gap-6 overflow-hidden">
@@ -1096,25 +1177,41 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
               <div className="flex w-32 flex-col text-sm font-medium text-zinc-600">
                 <button
                   onClick={() => setActiveFilterTab("FORMAT")}
-                  className={`rounded-xl px-3 py-2 text-left ${activeFilterTab === "FORMAT" ? "bg-zinc-900/5 text-zinc-900" : "hover:bg-zinc-100"}`}
+                  className={`rounded-xl px-3 py-2 text-left ${
+                    activeFilterTab === "FORMAT"
+                      ? "bg-zinc-900/5 text-zinc-900"
+                      : "hover:bg-zinc-100"
+                  }`}
                 >
                   Format
                 </button>
                 <button
                   onClick={() => setActiveFilterTab("SHOW_TIME")}
-                  className={`mt-1 rounded-xl px-3 py-2 text-left ${activeFilterTab === "SHOW_TIME" ? "bg-zinc-900/5 text-zinc-900" : "hover:bg-zinc-100"}`}
+                  className={`mt-1 rounded-xl px-3 py-2 text-left ${
+                    activeFilterTab === "SHOW_TIME"
+                      ? "bg-zinc-900/5 text-zinc-900"
+                      : "hover:bg-zinc-100"
+                  }`}
                 >
                   Show Time
                 </button>
                 <button
                   onClick={() => setActiveFilterTab("PRICE")}
-                  className={`mt-1 rounded-xl px-3 py-2 text-left ${activeFilterTab === "PRICE" ? "bg-zinc-900/5 text-zinc-900" : "hover:bg-zinc-100"}`}
+                  className={`mt-1 rounded-xl px-3 py-2 text-left ${
+                    activeFilterTab === "PRICE"
+                      ? "bg-zinc-900/5 text-zinc-900"
+                      : "hover:bg-zinc-100"
+                  }`}
                 >
                   Price
                 </button>
                 <button
                   onClick={() => setActiveFilterTab("OTHERS")}
-                  className={`mt-1 rounded-xl px-3 py-2 text-left ${activeFilterTab === "OTHERS" ? "bg-zinc-900/5 text-zinc-900" : "hover:bg-zinc-100"}`}
+                  className={`mt-1 rounded-xl px-3 py-2 text-left ${
+                    activeFilterTab === "OTHERS"
+                      ? "bg-zinc-900/5 text-zinc-900"
+                      : "hover:bg-zinc-100"
+                  }`}
                 >
                   Others
                 </button>
@@ -1130,10 +1227,16 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                         <input
                           type="checkbox"
                           checked={selectedFormats.includes(f.id)}
-                          onChange={() => setSelectedFormats((prev) => toggleFromArray(prev, f.id))}
+                          onChange={() =>
+                            setSelectedFormats((prev) =>
+                              toggleFromArray(prev, f.id)
+                            )
+                          }
                           className="mt-[1px] h-4 w-4 rounded-full border-2 border-zinc-400 accent-black"
                         />
-                        <span className="font-semibold text-zinc-900">{f.label}</span>
+                        <span className="font-semibold text-zinc-900">
+                          {f.label}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -1147,12 +1250,20 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                         <input
                           type="checkbox"
                           checked={selectedShowTimes.includes(opt.id)}
-                          onChange={() => setSelectedShowTimes((prev) => toggleFromArray(prev, opt.id))}
+                          onChange={() =>
+                            setSelectedShowTimes((prev) =>
+                              toggleFromArray(prev, opt.id)
+                            )
+                          }
                           className="mt-1 h-4 w-4 rounded-full border-2 border-zinc-400 accent-black"
                         />
                         <div>
-                          <div className="font-semibold text-zinc-900">{opt.label}</div>
-                          <div className="text-xs text-zinc-500">{opt.sub}</div>
+                          <div className="font-semibold text-zinc-900">
+                            {opt.label}
+                          </div>
+                          <div className="text-xs text-zinc-500">
+                            {opt.sub}
+                          </div>
                         </div>
                       </li>
                     ))}
@@ -1167,10 +1278,16 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                         <input
                           type="checkbox"
                           checked={selectedPriceRanges.includes(opt.id)}
-                          onChange={() => setSelectedPriceRanges((prev) => toggleFromArray(prev, opt.id))}
+                          onChange={() =>
+                            setSelectedPriceRanges((prev) =>
+                              toggleFromArray(prev, opt.id)
+                            )
+                          }
                           className="h-4 w-4 rounded-full border-2 border-zinc-400 accent-black"
                         />
-                        <span className="font-semibold text-zinc-900">{opt.label}</span>
+                        <span className="font-semibold text-zinc-900">
+                          {opt.label}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -1184,10 +1301,16 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                         <input
                           type="checkbox"
                           checked={selectedOthers.includes(opt.id)}
-                          onChange={() => setSelectedOthers((prev) => toggleFromArray(prev, opt.id))}
+                          onChange={() =>
+                            setSelectedOthers((prev) =>
+                              toggleFromArray(prev, opt.id)
+                            )
+                          }
                           className="h-4 w-4 rounded-full border-2 border-zinc-400 accent-black"
                         />
-                        <span className="font-semibold text-zinc-900">{opt.label}</span>
+                        <span className="font-semibold text-zinc-900">
+                          {opt.label}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -1197,11 +1320,19 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
 
             {/* Bottom actions */}
             <div className="mt-8 flex items-center justify-between">
-              <button type="button" onClick={handleClearFilters} className="text-sm font-medium text-zinc-700 underline underline-offset-4">
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="text-sm font-medium text-zinc-700 underline underline-offset-4"
+              >
                 Clear filter
               </button>
 
-              <button type="button" onClick={() => setIsFilterOpen(false)} className="flex min-w-[200px] items-center justify-center rounded-2xl bg-black px-6 py-3 text-sm font-semibold text-white hover:bg-zinc-900">
+              <button
+                type="button"
+                onClick={() => setIsFilterOpen(false)}
+                className="flex min-w-[200px] items-center justify-center rounded-2xl bg-black px-6 py-3 text-sm font-semibold text-white hover:bg-zinc-900"
+              >
                 View {totalShows} shows
               </button>
             </div>

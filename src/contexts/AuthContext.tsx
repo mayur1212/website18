@@ -1,6 +1,13 @@
+// src/contexts/AuthContext.tsx
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { User } from "@/lib/session";
 import { isValidUser } from "@/lib/validators";
 
@@ -29,10 +36,12 @@ export function AuthProvider({
       if (storedUser) {
         try {
           const parsed = JSON.parse(storedUser) as unknown;
+
           // Validate the parsed user data using type guard
-          if (isValidUser(parsed)) {
-            return parsed;
+          if (isValidUser(parsed as User)) {
+            return parsed as User;
           }
+
           return null;
         } catch {
           return null;
@@ -64,12 +73,12 @@ export function AuthProvider({
   const login = useCallback(async (userData: User) => {
     // Update local state
     setUserState(userData);
-    
+
     // Update localStorage
     if (typeof window !== "undefined") {
       localStorage.setItem("user", JSON.stringify(userData));
     }
-    
+
     // Sync with server session
     try {
       const response = await fetch("/api/auth/login", {
@@ -79,7 +88,7 @@ export function AuthProvider({
         },
         body: JSON.stringify({ user: userData }),
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to login");
       }
@@ -97,12 +106,12 @@ export function AuthProvider({
   const logout = useCallback(async () => {
     // Clear local state
     setUserState(null);
-    
+
     // Clear localStorage
     if (typeof window !== "undefined") {
       localStorage.removeItem("user");
     }
-    
+
     // Clear server session
     try {
       await fetch("/api/auth/logout", {
@@ -113,36 +122,39 @@ export function AuthProvider({
     }
   }, []);
 
-  const updateUser = useCallback(async (userData: Partial<User>) => {
-    if (!user) {
-      throw new Error("Cannot update user: not logged in");
-    }
-
-    // Update local state using functional update
-    setUserState((prevUser) => {
-      if (!prevUser) return null;
-      
-      const updatedUser = { ...prevUser, ...userData };
-      
-      // Update localStorage
-      if (typeof window !== "undefined") {
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+  const updateUser = useCallback(
+    async (userData: Partial<User>) => {
+      if (!user) {
+        throw new Error("Cannot update user: not logged in");
       }
-      
-      // Sync with server session
-      fetch("/api/auth/user", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user: updatedUser }),
-      }).catch((error) => {
-        console.error("Failed to sync user update with server:", error);
+
+      // Update local state using functional update
+      setUserState((prevUser) => {
+        if (!prevUser) return null;
+
+        const updatedUser = { ...prevUser, ...userData };
+
+        // Update localStorage
+        if (typeof window !== "undefined") {
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        }
+
+        // Sync with server session
+        fetch("/api/auth/user", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user: updatedUser }),
+        }).catch((error) => {
+          console.error("Failed to sync user update with server:", error);
+        });
+
+        return updatedUser;
       });
-      
-      return updatedUser;
-    });
-  }, [user]);
+    },
+    [user]
+  );
 
   return (
     <AuthContext.Provider
@@ -167,4 +179,3 @@ export function useAuth() {
   }
   return context;
 }
-

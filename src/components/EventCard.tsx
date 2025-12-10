@@ -181,7 +181,19 @@ const FILTER_CHIPS = [
   "Music",
 ];
 
-export default function EventCard() {
+type EventCardProps = {
+  quickFilter: string | null;
+  modalFilters: string[];
+  onOpenModal: () => void;
+  onQuickSelect: (chip: string) => void;
+};
+
+export default function EventCard({
+  quickFilter,
+  modalFilters,
+  onOpenModal,
+  onQuickSelect,
+}: EventCardProps) {
   return (
     <section className="w-full py-10">
       <div className="w-[80%] mx-auto">
@@ -198,21 +210,38 @@ export default function EventCard() {
           "
         >
           {/* Filters pill */}
-          <button className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-800 shadow-sm">
+          <button
+            onClick={onOpenModal}
+            className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-800 shadow-sm"
+          >
             <SlidersHorizontal className="w-4 h-4" />
             <span>Filters</span>
+            {modalFilters.length > 0 && (
+              <span className="text-xs text-zinc-500">
+                ({modalFilters.length})
+              </span>
+            )}
             <ChevronDown className="w-4 h-4" />
           </button>
 
           {/* Quick chips */}
-          {FILTER_CHIPS.map((chip) => (
-            <button
-              key={chip}
-              className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-800 hover:border-zinc-400"
-            >
-              {chip}
-            </button>
-          ))}
+          {FILTER_CHIPS.map((chip) => {
+            const isActive = quickFilter === chip;
+            return (
+              <button
+                key={chip}
+                onClick={() => onQuickSelect(chip)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition border 
+                  ${
+                    isActive
+                      ? "bg-black text-white border-black"
+                      : "border-zinc-200 bg-white text-zinc-800 hover:border-zinc-400"
+                  }`}
+              >
+                {chip}
+              </button>
+            );
+          })}
         </div>
 
         {/* Cards grid / list */}
@@ -224,14 +253,25 @@ export default function EventCard() {
               className="flex flex-col bg-white rounded-[18px] shadow-[0_6px_24px_rgba(0,0,0,0.12)] overflow-hidden hover:scale-[1.01] transition-transform"
             >
               <div className="relative w-full h-[240px] md:h-[260px]">
-                <Image src={event.image} alt={event.title} fill className="object-cover" />
+                <Image
+                  src={event.image}
+                  alt={event.title}
+                  fill
+                  className="object-cover"
+                />
               </div>
 
               <div className="px-4 py-4 bg-white">
                 <p className="text-[11px] text-zinc-500">{event.dateTime}</p>
-                <h3 className="text-[15px] font-semibold text-zinc-900 mt-1">{event.title}</h3>
-                <p className="text-[12px] text-zinc-500 truncate mt-1">{event.location}</p>
-                <p className="text-[13px] font-semibold text-zinc-900 mt-2">{event.price}</p>
+                <h3 className="text-[15px] font-semibold text-zinc-900 mt-1">
+                  {event.title}
+                </h3>
+                <p className="text-[12px] text-zinc-500 truncate mt-1">
+                  {event.location}
+                </p>
+                <p className="text-[13px] font-semibold text-zinc-900 mt-2">
+                  {event.price}
+                </p>
               </div>
             </Link>
           ))}

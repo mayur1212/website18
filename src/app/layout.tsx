@@ -27,10 +27,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // getSession ab null bhi ho sakta hai, isliye optional chaining use karenge
-  const session = await getSession();
+  // getSession can be null, so we keep it optional.
+  // We cast to `any` here so TypeScript doesn't complain about `language` / `region`.
+  const session = (await getSession()) as any | null;
 
-  const language = session?.language ?? "en";
+  const language: string = session?.language ?? "en";
 
   const region =
     session?.region ?? {
